@@ -29,6 +29,11 @@ public abstract class ProcessableTransaction implements Transaction, Processable
         this.ruleExecutionResults = new ArrayList<>(RULE_EXECUTION_RESULTS_DEFAULT_CAPACITY);
     }
 
+    ProcessableTransaction(final ProcessableTransaction processableTransaction) {
+        this.transaction = processableTransaction.getTransaction();
+        this.ruleExecutionResults = processableTransaction.getRuleExecutionResults();
+    }
+
     public static ProcessableTransaction ofFinal(final Transaction transaction, final RuleExecutionResult result) {
         return createOrUpdateProcessedTransaction(transaction, result, FinallyProcessedTransaction.class);
     }
@@ -36,18 +41,21 @@ public abstract class ProcessableTransaction implements Transaction, Processable
     private static ProcessableTransaction createOrUpdateProcessedTransaction(
             final Transaction transaction,
             final RuleExecutionResult ruleExecutionResult,
-            final Class<? extends ProcessableTransaction> processableTransactionClass) {
+            final Class<? extends ProcessableTransaction> implementationClass) {
         if (transaction instanceof ProcessableTransaction processableTransaction) {
-            if (!processableTransaction.isProcessed()) {
+            if (processableTransaction.isProcessed()) {
+                throw new IllegalArgumentException("Transaction " + transaction + " is already processed");
+            } else {
+                final ProcessableTransaction result = processableTransaction.getClass().equals(implementationClass)
+                        ? processableTransaction
+                        : createCopyOfAnotherType(processableTransaction, ruleExecutionResult, implementationClass);
                 if (ruleExecutionResult != null) {
                     processableTransaction.addResult(ruleExecutionResult);
                 }
-            } else {
-                throw new IllegalArgumentException("Transaction " + transaction + " is already processed");
+                return result;
             }
-            return processableTransaction;
         } else {
-            return createProcessedTransaction(transaction, ruleExecutionResult, processableTransactionClass);
+            return createProcessedTransaction(transaction, ruleExecutionResult, implementationClass);
         }
     }
 
@@ -63,6 +71,25 @@ public abstract class ProcessableTransaction implements Transaction, Processable
             return isResultPresent
                     ? constructor.newInstance(transaction, ruleExecutionResult)
                     : constructor.newInstance(transaction);
+        } catch (final NoSuchMethodException e) {
+            throw new IllegalStateException("Can't find appropriate constructor in " + implementationClass, e);
+        } catch (final InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Can't create instance of " + implementationClass, e);
+        }
+    }
+
+    private static ProcessableTransaction createCopyOfAnotherType(
+            final ProcessableTransaction processableTransaction,
+            final RuleExecutionResult ruleExecutionResult,
+            final Class<? extends ProcessableTransaction> implementationClass) {
+        try {
+            final Constructor<? extends ProcessableTransaction> constructor =
+                    implementationClass.getDeclaredConstructor(ProcessableTransaction.class);
+            final ProcessableTransaction newTransaction = constructor.newInstance(processableTransaction);
+            if (ruleExecutionResult != null) {
+                newTransaction.addResult(ruleExecutionResult);
+            }
+            return newTransaction;
         } catch (final NoSuchMethodException e) {
             throw new IllegalStateException("Can't find appropriate constructor in " + implementationClass, e);
         } catch (final InstantiationException | IllegalAccessException | InvocationTargetException e) {
@@ -97,5 +124,13 @@ public abstract class ProcessableTransaction implements Transaction, Processable
     @Override
     public String getResolution() {
         return transaction.getResolution();
+    }
+
+    public List<RuleExecutionResult> getRuleExecutionResults() {
+        return List.copyOf(ruleExecutionResults);
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
     }
 }
