@@ -28,13 +28,19 @@ class ProcessableTransactionTest {
     @Test
     void transactionChainTest() {
         // Arrange:
-        final ProcessableTransaction processableTransaction = ProcessableTransaction.ofFinal(
+        final ProcessableTransaction processedTransaction = ProcessableTransaction.ofFinal(
+                ProcessableTransaction.ofPartial(
+                        ProcessableTransaction.ofPartial(transaction)
+                )
+        );
+        final ProcessableTransaction unprocessedTransaction = ProcessableTransaction.ofPartial(
                 ProcessableTransaction.ofPartial(
                         ProcessableTransaction.ofPartial(transaction)
                 )
         );
         // Assert:
-        assertTrue(processableTransaction.isProcessed());
+        assertTrue(processedTransaction.isProcessed());
+        assertFalse(unprocessedTransaction.isProcessed());
     }
 
     @Test
