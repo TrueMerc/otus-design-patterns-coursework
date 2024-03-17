@@ -8,11 +8,11 @@
 		<version>3.2.3</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
-	<artifactId>demo</artifactId>
+	<groupId>ru.ryabtsev</groupId>
+	<artifactId>antifraud</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>demo</name>
-	<description>Demo project for Spring Boot</description>
+	<name>antifraud</name>
+	<description>Simple anti-fraud system prototype for my coursework</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
@@ -84,6 +84,11 @@
 						</exclude>
 					</excludes>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.2.2</version>
 			</plugin>
 		</plugins>
 	</build>
