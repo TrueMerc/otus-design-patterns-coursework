@@ -13,12 +13,15 @@ public class DefaultConditionalAction<T> implements ConditionalAction<T> {
     
     private boolean canBeExecuted;
 
+    private boolean isConditionCalculated;
+
     public DefaultConditionalAction(
             final Condition condition, final Action<T> action, final ExecutionCondition executionCondition) {
         this.condition = condition;
         this.action = action;
         this.executionCondition = executionCondition;
         canBeExecuted = false;
+        isConditionCalculated = false;
     }
 
     @Override
@@ -33,7 +36,10 @@ public class DefaultConditionalAction<T> implements ConditionalAction<T> {
 
     @Override
     public boolean canBeExecuted() {
-        canBeExecuted = canBeExecutedInCaseOfFulfillment() || canBeExecutedInCaseOfViolation();
+        if (!isConditionCalculated) {
+            canBeExecuted = canBeExecutedInCaseOfFulfillment() || canBeExecutedInCaseOfViolation();
+            isConditionCalculated = true;
+        }
         return canBeExecuted;
     }
 
@@ -47,6 +53,9 @@ public class DefaultConditionalAction<T> implements ConditionalAction<T> {
 
     @Override
     public T execute() {
+        if (!isConditionCalculated) {
+            canBeExecuted();
+        }
         if (canBeExecuted) {
             return action.execute();
         } else {
