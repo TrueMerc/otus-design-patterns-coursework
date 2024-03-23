@@ -2,11 +2,13 @@ package ru.ryabtsev.antifraud.rules.black;
 
 import java.util.List;
 import ru.ryabtsev.antifraud.caches.BlackTinCache;
+import ru.ryabtsev.antifraud.conditional.actions.ConditionalActionWithAlternative;
 import ru.ryabtsev.antifraud.conditional.actions.ConditionalActions;
 import ru.ryabtsev.antifraud.conditional.actions.DefaultConditionalAction;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
 import ru.ryabtsev.antifraud.rules.RuleExecutionResult;
 import ru.ryabtsev.antifraud.rules.actions.BasicIncidentGeneration;
+import ru.ryabtsev.antifraud.rules.actions.BasicRuleResultGeneration;
 import ru.ryabtsev.antifraud.rules.condiitons.InstanceOfClass;
 import ru.ryabtsev.antifraud.rules.condiitons.PresenceInContainer;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
@@ -35,14 +37,16 @@ public class RecipientInBlackLists implements BlackRule {
 
     @Override
     public ProcessableTransaction applyTo(final Transaction transaction) {
+        final var defaultAction = new BasicRuleResultGeneration(this, ruleConfiguration, DEFAULT_MESSAGE);
         final var presenceInContainer = new PresenceInContainer<>(
                 ((PayeeTinContainer) transaction).getPayeeTin(), blackTinCache
         );
-        final var conditionalIncidentGeneration = new DefaultConditionalAction<>(
-                presenceInContainer, new BasicIncidentGeneration(this, ruleConfiguration, INCIDENT_MESSAGE)
+        final var conditionalIncidentGeneration = new ConditionalActionWithAlternative<>(
+                presenceInContainer,
+                new BasicIncidentGeneration(this, ruleConfiguration, INCIDENT_MESSAGE),
+                defaultAction
         );
         final var instanceOfClass = new InstanceOfClass(transaction, PayeeTinContainer.class);
-        final var defaultAction = new BasicIncidentGeneration(this, ruleConfiguration, DEFAULT_MESSAGE);
         final var conditionalActions = new ConditionalActions<>(
                 List.of(
                         new DefaultConditionalAction<>(instanceOfClass, conditionalIncidentGeneration)
