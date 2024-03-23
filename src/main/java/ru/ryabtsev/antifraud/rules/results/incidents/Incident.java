@@ -8,4 +8,9 @@ public interface Incident extends RuleExecutionResult {
     default boolean isIncident() {
         return true;
     }
+
+    @Override
+    default String getStatus() {
+        return "TRIGGERED";
+    }
 }

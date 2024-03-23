@@ -12,6 +12,7 @@ import ru.ryabtsev.antifraud.rules.results.incidents.Incident;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 import ru.ryabtsev.antifraud.transactions.rbs.C2BPayment;
+import ru.ryabtsev.antifraud.transactions.rbs.TransferToAnotherCard;
 
 class RecipientInBlackListsTest {
 
@@ -55,6 +56,23 @@ class RecipientInBlackListsTest {
         // Act:
         final ProcessableTransaction processedTransaction = rule.applyTo(transaction);
         // Assert:
+        Assertions.assertFalse(processedTransaction.isProcessed());
+        final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
+        Assertions.assertEquals(1, results.size());
+        final RuleExecutionResult result = results.get(0);
+        Assertions.assertFalse(result instanceof Incident);
+        Assertions.assertFalse(result.isIncident());
+    }
+
+    @Test
+    void shouldNotBeOfAppropriateType() {
+        // Arrange:
+        final Transaction transaction = TransferToAnotherCard.builder()
+                .withDestinationCardNumber("123456789012")
+                .build();
+
+        // Assert:
+        final ProcessableTransaction processedTransaction = rule.applyTo(transaction);
         Assertions.assertFalse(processedTransaction.isProcessed());
         final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
         Assertions.assertEquals(1, results.size());

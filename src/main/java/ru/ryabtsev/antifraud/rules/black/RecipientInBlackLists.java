@@ -38,7 +38,7 @@ public class RecipientInBlackLists implements BlackRule {
     public ProcessableTransaction applyTo(final Transaction transaction) {
         final var defaultAction = new BasicRuleResultGeneration(new RuleIsNotApplied(this, ruleConfiguration));
         final var presenceInContainer = new PresenceInContainer<>(
-                ((PayeeTinContainer) transaction).getPayeeTin(), blackTinCache
+                transaction, PayeeTinContainer::getPayeeTin, blackTinCache
         );
         final var conditionalIncidentGeneration = new ConditionalActionWithAlternative<>(
                 presenceInContainer,

@@ -2,7 +2,7 @@ package ru.ryabtsev.antifraud.rules.actions;
 
 import java.util.Objects;
 import ru.ryabtsev.antifraud.conditional.actions.Action;
-import ru.ryabtsev.antifraud.rules.BasicRuleExecutionResult;
+import ru.ryabtsev.antifraud.rules.results.BasicRuleExecutionResult;
 import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
 import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;

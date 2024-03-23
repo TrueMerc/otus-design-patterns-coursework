@@ -9,6 +9,8 @@ public interface RuleExecutionResult {
 
     RuleConfiguration getRuleConfiguration();
 
+    String getMessage();
+
     String getStatus();
 
     default boolean isIncident() {

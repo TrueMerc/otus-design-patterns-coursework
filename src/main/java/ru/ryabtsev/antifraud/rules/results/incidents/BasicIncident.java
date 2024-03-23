@@ -11,10 +11,10 @@ public class BasicIncident implements Incident {
 
     private final String status;
 
-    public BasicIncident(final Rule rule, final RuleConfiguration ruleConfiguration, final String status) {
+    public BasicIncident(final Rule rule, final RuleConfiguration ruleConfiguration, final String message) {
         this.rule = rule;
         this.ruleConfiguration = ruleConfiguration;
-        this.status = status;
+        this.status = message;
     }
 
     @Override
@@ -28,7 +28,7 @@ public class BasicIncident implements Incident {
     }
 
     @Override
-    public String getStatus() {
+    public String getMessage() {
         return status;
     }
 }
