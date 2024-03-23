@@ -20,7 +20,7 @@ class RecipientInBlackListsTest {
             List.of("00000000000", TIN, "00000000002")
     );
 
-    private final Rule rule = new RecipientInBlackLists(blackTinCache);
+    private final Rule rule = new RecipientInBlackLists(null, blackTinCache);
 
     @Test
     void shouldBeInBlackList() {
@@ -39,6 +39,7 @@ class RecipientInBlackListsTest {
         Assertions.assertEquals(1, results.size());
         final RuleExecutionResult result = results.get(0);
         Assertions.assertTrue(result instanceof Incident);
+        Assertions.assertTrue(result.isIncident());
     }
 
 

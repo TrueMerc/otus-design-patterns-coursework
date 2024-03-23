@@ -21,6 +21,10 @@ public class DefaultConditionalAction<T> implements ConditionalAction<T> {
         isConditionCalculated = false;
     }
 
+    public DefaultConditionalAction(final Condition condition, final Action<T> action) {
+        this(condition, action, ExecutionCondition.FULFILLMENT);
+    }
+
     @Override
     public Condition getCondition() {
         return condition;
