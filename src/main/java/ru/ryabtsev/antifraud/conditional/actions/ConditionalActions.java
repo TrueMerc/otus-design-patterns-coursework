@@ -1,8 +1,6 @@
 package ru.ryabtsev.antifraud.conditional.actions;
 
-import java.util.ArrayList;
 import java.util.List;
-import ru.ryabtsev.antifraud.actions.Action;
 import ru.ryabtsev.antifraud.traits.Executable;
 
 public class ConditionalActions<T> implements Executable<T> {

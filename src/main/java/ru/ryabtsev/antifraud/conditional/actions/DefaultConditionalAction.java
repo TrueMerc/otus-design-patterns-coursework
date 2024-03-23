@@ -1,8 +1,5 @@
 package ru.ryabtsev.antifraud.conditional.actions;
 
-import ru.ryabtsev.antifraud.actions.Action;
-import ru.ryabtsev.antifraud.conditions.Condition;
-
 public class DefaultConditionalAction<T> implements ConditionalAction<T> {
 
     private final Condition condition;

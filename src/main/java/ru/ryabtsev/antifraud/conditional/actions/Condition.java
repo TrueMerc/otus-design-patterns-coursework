@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.conditions;
+package ru.ryabtsev.antifraud.conditional.actions;
 
 /**
  * The root interface in condition hierarchy.

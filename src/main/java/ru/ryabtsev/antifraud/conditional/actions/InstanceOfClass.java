@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.conditions;
+package ru.ryabtsev.antifraud.conditional.actions;
 
 public record InstanceOfClass(Object object, Class<?> possibleClassOfObject) implements Condition {
 

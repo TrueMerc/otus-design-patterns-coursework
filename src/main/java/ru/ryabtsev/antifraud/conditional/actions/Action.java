@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.actions;
+package ru.ryabtsev.antifraud.conditional.actions;
 
 import ru.ryabtsev.antifraud.traits.Executable;
 
