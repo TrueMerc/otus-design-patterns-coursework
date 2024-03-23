@@ -6,11 +6,11 @@ import ru.ryabtsev.antifraud.conditional.actions.ConditionalActionWithAlternativ
 import ru.ryabtsev.antifraud.conditional.actions.ConditionalActions;
 import ru.ryabtsev.antifraud.conditional.actions.DefaultConditionalAction;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
-import ru.ryabtsev.antifraud.rules.RuleExecutionResult;
 import ru.ryabtsev.antifraud.rules.actions.BasicIncidentGeneration;
 import ru.ryabtsev.antifraud.rules.actions.BasicRuleResultGeneration;
 import ru.ryabtsev.antifraud.rules.condiitons.InstanceOfClass;
 import ru.ryabtsev.antifraud.rules.condiitons.PresenceInContainer;
+import ru.ryabtsev.antifraud.rules.results.RuleIsNotApplied;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 import ru.ryabtsev.antifraud.transactions.traits.PayeeTinContainer;
@@ -22,7 +22,6 @@ public class RecipientInBlackLists implements BlackRule {
 
     private static final String INCIDENT_MESSAGE = "ИНН содержится в чёрном списке";
 
-    private static final String DEFAULT_MESSAGE = "Правило не применилось";
 
     private final BlackTinCache blackTinCache;
 
@@ -37,7 +36,7 @@ public class RecipientInBlackLists implements BlackRule {
 
     @Override
     public ProcessableTransaction applyTo(final Transaction transaction) {
-        final var defaultAction = new BasicRuleResultGeneration(this, ruleConfiguration, DEFAULT_MESSAGE);
+        final var defaultAction = new BasicRuleResultGeneration(new RuleIsNotApplied(this, ruleConfiguration));
         final var presenceInContainer = new PresenceInContainer<>(
                 ((PayeeTinContainer) transaction).getPayeeTin(), blackTinCache
         );

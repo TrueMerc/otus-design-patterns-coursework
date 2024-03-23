@@ -1,5 +1,6 @@
 package ru.ryabtsev.antifraud.rules;
 
+import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 

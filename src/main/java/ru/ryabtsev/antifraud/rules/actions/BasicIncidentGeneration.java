@@ -3,8 +3,8 @@ package ru.ryabtsev.antifraud.rules.actions;
 import ru.ryabtsev.antifraud.conditional.actions.Action;
 import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
-import ru.ryabtsev.antifraud.rules.RuleExecutionResult;
-import ru.ryabtsev.antifraud.rules.incidents.BasicIncident;
+import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
+import ru.ryabtsev.antifraud.rules.results.incidents.BasicIncident;
 
 public class BasicIncidentGeneration implements Action<RuleExecutionResult> {
 

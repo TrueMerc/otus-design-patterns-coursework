@@ -4,7 +4,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-import ru.ryabtsev.antifraud.rules.RuleExecutionResult;
+import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
 import ru.ryabtsev.antifraud.traits.Processable;
 
 /**

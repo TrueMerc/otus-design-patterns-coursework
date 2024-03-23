@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.rules.incidents;
+package ru.ryabtsev.antifraud.rules.results.incidents;
 
 import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;

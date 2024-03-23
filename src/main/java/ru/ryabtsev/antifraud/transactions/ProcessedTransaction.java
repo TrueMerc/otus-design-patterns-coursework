@@ -1,6 +1,6 @@
 package ru.ryabtsev.antifraud.transactions;
 
-import ru.ryabtsev.antifraud.rules.RuleExecutionResult;
+import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
 
 class ProcessedTransaction extends ProcessableTransaction {
 

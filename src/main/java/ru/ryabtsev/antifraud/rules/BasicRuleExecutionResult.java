@@ -1,5 +1,7 @@
 package ru.ryabtsev.antifraud.rules;
 
+import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
+
 public class BasicRuleExecutionResult implements RuleExecutionResult {
 
     private final Rule rule;
