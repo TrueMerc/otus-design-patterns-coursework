@@ -13,7 +13,7 @@ public class DummyRule implements Rule {
     }
 
     @Override
-    public Transaction applyTo(final Transaction transaction) {
+    public ProcessableTransaction applyTo(final Transaction transaction) {
         return ProcessableTransaction.ofPartial(transaction, ruleExecutionResult);
     }
 }

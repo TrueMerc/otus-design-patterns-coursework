@@ -18,7 +18,7 @@ public class Rules implements Applicable<Transaction, ProcessableTransaction> {
     }
 
     @Override
-    public Transaction applyTo(final Transaction transaction) {
-        return transaction;
+    public ProcessableTransaction applyTo(final Transaction transaction) {
+        return ProcessableTransaction.ofFinal(transaction);
     }
 }

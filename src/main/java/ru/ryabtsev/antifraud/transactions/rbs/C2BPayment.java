@@ -8,7 +8,7 @@ import ru.ryabtsev.antifraud.transactions.traits.PayeeTinContainer;
 /**
  * The class that corresponds the 'Customer To Business' type of transaction in UFS system.
  */
-@Builder
+@Builder(setterPrefix = "with")
 public class C2BPayment implements Transaction, Identifiable<Long>, PayeeTinContainer {
 
     private final Long id;

@@ -35,7 +35,7 @@ public abstract class ProcessableTransaction implements Transaction, Processable
     }
 
     public static ProcessableTransaction ofFinal(final Transaction transaction, final RuleExecutionResult result) {
-        return createOrUpdateProcessedTransaction(transaction, result, FinallyProcessedTransaction.class);
+        return createOrUpdateProcessedTransaction(transaction, result, ProcessedTransaction.class);
     }
 
     private static ProcessableTransaction createOrUpdateProcessedTransaction(
@@ -98,7 +98,7 @@ public abstract class ProcessableTransaction implements Transaction, Processable
     }
 
     public static ProcessableTransaction ofFinal(final Transaction transaction) {
-        return createOrUpdateProcessedTransaction(transaction, null, FinallyProcessedTransaction.class);
+        return createOrUpdateProcessedTransaction(transaction, null, ProcessedTransaction.class);
     }
 
     public static ProcessableTransaction ofPartial(final Transaction transaction, final RuleExecutionResult result) {
