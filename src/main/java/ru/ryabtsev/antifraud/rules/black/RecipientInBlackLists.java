@@ -22,7 +22,6 @@ public class RecipientInBlackLists implements BlackRule {
 
     private static final String INCIDENT_MESSAGE = "ИНН содержится в чёрном списке";
 
-
     private final BlackTinCache blackTinCache;
 
     private final RuleConfiguration ruleConfiguration;
