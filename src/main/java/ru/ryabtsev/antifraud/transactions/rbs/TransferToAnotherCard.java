@@ -31,7 +31,7 @@ public class TransferToAnotherCard
     }
 
     @Override
-    public String destinationCardNumber() {
+    public String getDestinationCardNumber() {
         return destinationCardNumber;
     }
 

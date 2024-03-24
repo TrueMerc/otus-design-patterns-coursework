@@ -15,12 +15,16 @@ public class BasicRuleResultGeneration implements Action<RuleExecutionResult> {
 
     private final String status;
 
+    private final String message;
+
     private final RuleExecutionResult predefinedResult;
 
-    public BasicRuleResultGeneration(final Rule rule, final RuleConfiguration ruleConfiguration, final String status) {
+    public BasicRuleResultGeneration(
+            final Rule rule, final RuleConfiguration ruleConfiguration, final String status, final String message) {
         this.rule = rule;
         this.ruleConfiguration = ruleConfiguration;
         this.status = status;
+        this.message = message;
         predefinedResult = null;
     }
 
@@ -28,12 +32,13 @@ public class BasicRuleResultGeneration implements Action<RuleExecutionResult> {
         rule = null;
         ruleConfiguration = null;
         status = null;
+        message = null;
         this.predefinedResult = predefinedResult;
     }
 
     @Override
     public RuleExecutionResult execute() {
         return Objects.requireNonNullElseGet(
-                predefinedResult, () -> new BasicRuleExecutionResult(rule, ruleConfiguration, status));
+                predefinedResult, () -> new BasicRuleExecutionResult(rule, ruleConfiguration, status, message));
     }
 }

@@ -1,37 +1,38 @@
-package ru.ryabtsev.antifraud.rules;
+package ru.ryabtsev.antifraud.rules.white;
 
 import java.util.List;
 import org.instancio.Instancio;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import ru.ryabtsev.antifraud.caches.BlackTinMockCache;
-import ru.ryabtsev.antifraud.caches.BlackTinCache;
-import ru.ryabtsev.antifraud.rules.black.RecipientInBlackLists;
+import ru.ryabtsev.antifraud.caches.TrustedCardNumberCache;
+import ru.ryabtsev.antifraud.caches.TrustedCardNumberMockCache;
+import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
-import ru.ryabtsev.antifraud.rules.results.incidents.Incident;
+import ru.ryabtsev.antifraud.rules.results.RuleIsApplied;
+import ru.ryabtsev.antifraud.rules.results.RuleIsNotApplied;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 import ru.ryabtsev.antifraud.transactions.rbs.C2BPayment;
 import ru.ryabtsev.antifraud.transactions.rbs.TransferToAnotherCard;
 
-class RecipientInBlackListsTest {
+class TrustedTransferTest {
 
-    private static final String TIN_FROM_BLACK_LIST = "00000000001";
+    private static final String CARD_NUMBER_FROM_WHITE_LIST = "1234567890000001";
 
-    private static final String TIN_OUT_OF_BLACK_LIST = "00000000004";
+    private static final String CARD_NUMBER_OUT_OF_WHITE_LIST = "1234567890000004";
 
-    private final BlackTinCache blackTinCache = new BlackTinMockCache(
-            List.of("00000000000", TIN_FROM_BLACK_LIST, "00000000002")
+    private final TrustedCardNumberCache trustedCardNumberCache = new TrustedCardNumberMockCache(
+            List.of(CARD_NUMBER_FROM_WHITE_LIST, "1234567890000002", "1234567890000003")
     );
 
-    private final Rule rule = new RecipientInBlackLists(null, blackTinCache);
+    private final Rule rule = new TrustedTransfer(null, trustedCardNumberCache);
 
     @Test
-    void shouldBeInBlackList() {
+    void shouldBeApplied() {
         // Arrange:
-        final Transaction transaction = C2BPayment.builder()
+        final Transaction transaction = TransferToAnotherCard.builder()
                 .withId(Instancio.create(Long.class))
-                .withPayeeTin(TIN_FROM_BLACK_LIST)
+                .withDestinationCardNumber(CARD_NUMBER_FROM_WHITE_LIST)
                 .build();
 
         // Act:
@@ -42,42 +43,47 @@ class RecipientInBlackListsTest {
         final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
         Assertions.assertEquals(1, results.size());
         final RuleExecutionResult result = results.get(0);
-        Assertions.assertTrue(result instanceof Incident);
-        Assertions.assertTrue(result.isIncident());
+        Assertions.assertFalse(result.isIncident());
+        Assertions.assertEquals(RuleIsApplied.STATUS, result.getStatus());
     }
 
     @Test
-    void shouldNotBeInBlackList() {
+    void shouldNotBeApplied() {
         // Arrange:
-        final Transaction transaction = C2BPayment.builder()
-                .withPayeeTin(TIN_OUT_OF_BLACK_LIST)
+        final Transaction transaction = TransferToAnotherCard.builder()
+                .withId(Instancio.create(Long.class))
+                .withDestinationCardNumber(CARD_NUMBER_OUT_OF_WHITE_LIST)
                 .build();
 
         // Act:
         final ProcessableTransaction processedTransaction = rule.applyTo(transaction);
+
         // Assert:
         Assertions.assertFalse(processedTransaction.isProcessed());
         final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
         Assertions.assertEquals(1, results.size());
         final RuleExecutionResult result = results.get(0);
-        Assertions.assertFalse(result instanceof Incident);
         Assertions.assertFalse(result.isIncident());
+        Assertions.assertEquals(RuleIsNotApplied.STATUS, result.getStatus());
     }
 
     @Test
-    void shouldNotBeOfAppropriateType() {
+    void shouldNotBeAppropriateType() {
         // Arrange:
-        final Transaction transaction = TransferToAnotherCard.builder()
-                .withDestinationCardNumber("123456789012")
+        final Transaction transaction = C2BPayment.builder()
+                .withId(Instancio.create(Long.class))
+                .withPayeeTin(CARD_NUMBER_OUT_OF_WHITE_LIST)
                 .build();
 
-        // Assert:
+        // Act:
         final ProcessableTransaction processedTransaction = rule.applyTo(transaction);
+
+        // Assert:
         Assertions.assertFalse(processedTransaction.isProcessed());
         final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
         Assertions.assertEquals(1, results.size());
         final RuleExecutionResult result = results.get(0);
-        Assertions.assertFalse(result instanceof Incident);
         Assertions.assertFalse(result.isIncident());
+        Assertions.assertEquals(RuleIsNotApplied.STATUS, result.getStatus());
     }
 }

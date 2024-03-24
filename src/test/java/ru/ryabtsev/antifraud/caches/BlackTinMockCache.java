@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud;
+package ru.ryabtsev.antifraud.caches;
 
 import java.util.List;
 import ru.ryabtsev.antifraud.caches.BlackTinCache;

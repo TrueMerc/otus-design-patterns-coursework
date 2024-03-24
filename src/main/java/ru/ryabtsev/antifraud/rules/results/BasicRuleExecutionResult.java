@@ -6,8 +6,6 @@ import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
 
 public class BasicRuleExecutionResult implements RuleExecutionResult {
 
-    private static final String DEFAULT_STATUS = "NOT TRIGGERED";
-
     private final Rule rule;
 
     private final RuleConfiguration ruleConfiguration;
@@ -26,18 +24,6 @@ public class BasicRuleExecutionResult implements RuleExecutionResult {
         this.status = status;
         this.message = message;
     }
-
-    public BasicRuleExecutionResult(
-            final Rule rule,
-            final RuleConfiguration ruleConfiguration,
-            final String message
-    ) {
-        this.rule = rule;
-        this.ruleConfiguration = ruleConfiguration;
-        status = DEFAULT_STATUS;
-        this.message = message;
-    }
-
 
     @Override
     public Rule getRule() {

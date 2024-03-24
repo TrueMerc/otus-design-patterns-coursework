@@ -5,5 +5,5 @@ package ru.ryabtsev.antifraud.transactions.traits;
  */
 public interface DestinationCardNumberContainer {
 
-    String destinationCardNumber();
+    String getDestinationCardNumber();
 }

@@ -8,6 +8,8 @@ import ru.ryabtsev.antifraud.conditional.actions.DefaultConditionalAction;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
 import ru.ryabtsev.antifraud.rules.actions.BasicIncidentGeneration;
 import ru.ryabtsev.antifraud.rules.actions.BasicRuleResultGeneration;
+import ru.ryabtsev.antifraud.rules.actions.RuleIsNotAppliedGeneration;
+import ru.ryabtsev.antifraud.rules.actions.UnsupportedTransactionTypeGeneration;
 import ru.ryabtsev.antifraud.rules.condiitons.InstanceOfClass;
 import ru.ryabtsev.antifraud.rules.condiitons.PresenceInContainer;
 import ru.ryabtsev.antifraud.rules.results.RuleIsNotApplied;
@@ -22,6 +24,8 @@ public class RecipientInBlackLists implements BlackRule {
 
     private static final String INCIDENT_MESSAGE = "ИНН содержится в чёрном списке";
 
+    private static final String DEFAULT_MESSAGE = "Нет совпадений по параметрам со списками запрещенных";
+
     private final BlackTinCache blackTinCache;
 
     private final RuleConfiguration ruleConfiguration;
@@ -30,25 +34,25 @@ public class RecipientInBlackLists implements BlackRule {
     public RecipientInBlackLists(final RuleConfiguration ruleConfiguration, final BlackTinCache blackTinCache) {
         this.blackTinCache = blackTinCache;
         this.ruleConfiguration = ruleConfiguration;
-
     }
 
     @Override
     public ProcessableTransaction applyTo(final Transaction transaction) {
-        final var defaultAction = new BasicRuleResultGeneration(new RuleIsNotApplied(this, ruleConfiguration));
+        final var defaultAction = new UnsupportedTransactionTypeGeneration(this, ruleConfiguration);
         final var presenceInContainer = new PresenceInContainer<>(
                 transaction, PayeeTinContainer::getPayeeTin, blackTinCache
+        );
+        final var parametersAreNotPresentInBlackList = new RuleIsNotAppliedGeneration(
+                this, ruleConfiguration, DEFAULT_MESSAGE
         );
         final var conditionalIncidentGeneration = new ConditionalActionWithAlternative<>(
                 presenceInContainer,
                 new BasicIncidentGeneration(this, ruleConfiguration, INCIDENT_MESSAGE),
-                defaultAction
+                parametersAreNotPresentInBlackList
         );
         final var instanceOfClass = new InstanceOfClass(transaction, PayeeTinContainer.class);
         final var conditionalActions = new ConditionalActions<>(
-                List.of(
-                        new DefaultConditionalAction<>(instanceOfClass, conditionalIncidentGeneration)
-                ),
+                List.of(new DefaultConditionalAction<>(instanceOfClass, conditionalIncidentGeneration)),
                 defaultAction
         );
         final var ruleExecutionResult = conditionalActions.execute();
