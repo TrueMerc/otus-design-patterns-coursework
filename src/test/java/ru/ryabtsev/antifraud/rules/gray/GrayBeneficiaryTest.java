@@ -36,11 +36,11 @@ class GrayBeneficiaryTest {
                 .build();
 
         // Act:
-        final ProcessableTransaction processedTransaction = rule.applyTo(transaction);
+        final ProcessableTransaction processableTransaction = rule.applyTo(transaction);
 
         // Assert:
-        Assertions.assertFalse(processedTransaction.isProcessed());
-        final List<RuleExecutionResult> results = processedTransaction.getRuleExecutionResults();
+        Assertions.assertFalse(processableTransaction.isProcessed());
+        final List<RuleExecutionResult> results = processableTransaction.getRuleExecutionResults();
         Assertions.assertEquals(1, results.size());
         final RuleExecutionResult result = results.get(0);
         Assertions.assertTrue(result.isIncident());

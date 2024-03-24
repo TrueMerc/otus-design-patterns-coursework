@@ -1,7 +1,6 @@
 package ru.ryabtsev.antifraud.rules.gray;
 
 import java.time.Duration;
-import java.util.List;
 import ru.ryabtsev.antifraud.caches.QuarantinedCardNumberCache;
 import ru.ryabtsev.antifraud.caches.TrustedCardNumberCache;
 import ru.ryabtsev.antifraud.conditional.actions.ConditionalActionWithAlternative;
@@ -16,29 +15,30 @@ import ru.ryabtsev.antifraud.rules.conditions.CardNumberPresentsInQuarantineForL
 import ru.ryabtsev.antifraud.rules.conditions.InstanceOfClass;
 import ru.ryabtsev.antifraud.rules.conditions.PresenceInContainer;
 import ru.ryabtsev.antifraud.rules.conditions.PropertyAccessor;
-import ru.ryabtsev.antifraud.rules.results.RuleIsApplied;
+import ru.ryabtsev.antifraud.rules.configurations.NewPayeeRuleConfiguration;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 import ru.ryabtsev.antifraud.transactions.traits.DestinationCardNumberContainer;
 
 public class NewPayee implements GrayRule {
 
-    private static final String PAYEE_IN_WHITE_LIST = "Получатель найден в списке разрешенных";
+    static final String PAYEE_IN_WHITE_LIST = "Получатель найден в списке разрешенных";
 
-    private static final String ALREADY_PRESENT_IN_QUARANTINE = "Получатель уже находится в карантине";
+    static final String ALREADY_PRESENT_IN_QUARANTINE = "Получатель уже находится в карантине";
 
-    private static final String RECENTLY_PRESENT_IN_QUARANTINE = "Получатель недавно находится в карантине";
+    static final String RECENTLY_PRESENT_IN_QUARANTINE = "Получатель недавно находится в карантине";
 
-    private static final String NEW_PAYEE = "Платеж в сторону нового получателя";
+    static final String NEW_PAYEE = "Платеж в сторону нового получателя";
 
-    private final RuleConfiguration ruleConfiguration;
+    private final NewPayeeRuleConfiguration ruleConfiguration;
 
     private final TrustedCardNumberCache trustedCardNumberCache;
 
     private final QuarantinedCardNumberCache quarantinedCardNumberCache;
 
-    public NewPayee(RuleConfiguration ruleConfiguration, TrustedCardNumberCache trustedCardNumberCache,
-                    QuarantinedCardNumberCache quarantinedCardNumberCache) {
+    public NewPayee(final NewPayeeRuleConfiguration ruleConfiguration,
+                    final TrustedCardNumberCache trustedCardNumberCache,
+                    final QuarantinedCardNumberCache quarantinedCardNumberCache) {
         this.ruleConfiguration = ruleConfiguration;
         this.trustedCardNumberCache = trustedCardNumberCache;
         this.quarantinedCardNumberCache = quarantinedCardNumberCache;
@@ -64,7 +64,7 @@ public class NewPayee implements GrayRule {
         final var presentInQuarantineForLongTime = new CardNumberPresentsInQuarantineForLongTime(
                 new PropertyAccessor<>(transaction, DestinationCardNumberContainer::getDestinationCardNumber),
                 quarantinedCardNumberCache,
-                Duration.ofHours(1)
+                ruleConfiguration.getQuarantineThreshold()
         );
         final var cardNumberPresenceInQuarantineCheck = new ConditionalActionWithAlternative<>(
                 presentInQuarantineForLongTime,
@@ -78,12 +78,9 @@ public class NewPayee implements GrayRule {
                 cardNumberPresenceInQuarantineCheck
         );
         final var conditionalActions = new ConditionalActions<>(
-                List.of(new DefaultConditionalAction<>(instanceOfClass, cardNumberPresenceCheck)),
+                new DefaultConditionalAction<>(instanceOfClass, cardNumberPresenceCheck),
                 defaultAction
         );
-        final var ruleExecutionResult = conditionalActions.execute();
-        return RuleIsApplied.STATUS.equals(ruleExecutionResult.getStatus())
-                ? ProcessableTransaction.ofFinal(transaction, ruleExecutionResult)
-                : ProcessableTransaction.ofPartial(transaction, ruleExecutionResult);
+        return ProcessableTransaction.ofPartial(transaction, conditionalActions.execute());
     }
 }
