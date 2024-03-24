@@ -14,6 +14,10 @@ public class ConditionalActions<T> implements Executable<T> {
         this.defaultAction = defaultAction;
     }
 
+    public ConditionalActions(final ConditionalAction<T> conditionalAction, final Action<T> defaultAction) {
+        this(List.of(conditionalAction), defaultAction);
+    }
+
     @Override
     public T execute() {
         return conditionalActions.stream()

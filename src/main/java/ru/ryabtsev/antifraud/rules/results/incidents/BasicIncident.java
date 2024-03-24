@@ -2,33 +2,16 @@ package ru.ryabtsev.antifraud.rules.results.incidents;
 
 import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.RuleConfiguration;
+import ru.ryabtsev.antifraud.rules.results.RuleIsApplied;
 
-public class BasicIncident implements Incident {
-
-    private final Rule rule;
-
-    private final RuleConfiguration ruleConfiguration;
-
-    private final String status;
+public class BasicIncident extends RuleIsApplied implements Incident {
 
     public BasicIncident(final Rule rule, final RuleConfiguration ruleConfiguration, final String message) {
-        this.rule = rule;
-        this.ruleConfiguration = ruleConfiguration;
-        this.status = message;
+        super(rule, ruleConfiguration, message);
     }
 
     @Override
-    public Rule getRule() {
-        return rule;
-    }
-
-    @Override
-    public RuleConfiguration getRuleConfiguration() {
-        return ruleConfiguration;
-    }
-
-    @Override
-    public String getMessage() {
-        return status;
+    public boolean isIncident() {
+        return Incident.super.isIncident();
     }
 }
