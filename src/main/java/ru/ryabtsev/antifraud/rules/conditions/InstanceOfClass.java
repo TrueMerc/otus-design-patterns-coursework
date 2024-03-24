@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.rules.condiitons;
+package ru.ryabtsev.antifraud.rules.conditions;
 
 import ru.ryabtsev.antifraud.conditional.actions.Condition;
 

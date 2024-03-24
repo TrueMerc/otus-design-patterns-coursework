@@ -6,7 +6,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
-import ru.ryabtsev.antifraud.rules.condiitons.InstanceOfClass;
+import ru.ryabtsev.antifraud.rules.conditions.InstanceOfClass;
 
 class DefaultConditionalActionTest {
 

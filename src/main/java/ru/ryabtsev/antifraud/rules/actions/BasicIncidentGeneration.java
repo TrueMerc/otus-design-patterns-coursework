@@ -12,16 +12,16 @@ public class BasicIncidentGeneration implements Action<RuleExecutionResult> {
 
     private final RuleConfiguration ruleConfiguration;
 
-    private final String status;
+    private final String message;
 
-    public BasicIncidentGeneration(Rule rule, RuleConfiguration ruleConfiguration, String status) {
+    public BasicIncidentGeneration(final Rule rule, final RuleConfiguration ruleConfiguration, final String message) {
         this.rule = rule;
         this.ruleConfiguration = ruleConfiguration;
-        this.status = status;
+        this.message = message;
     }
 
     @Override
     public RuleExecutionResult execute() {
-        return new BasicIncident(rule, ruleConfiguration, status);
+        return new BasicIncident(rule, ruleConfiguration, message);
     }
 }

@@ -8,12 +8,11 @@ import ru.ryabtsev.antifraud.rules.RuleConfiguration;
 import ru.ryabtsev.antifraud.rules.actions.BasicIncidentGeneration;
 import ru.ryabtsev.antifraud.rules.actions.RuleIsNotAppliedGeneration;
 import ru.ryabtsev.antifraud.rules.actions.UnsupportedTransactionTypeGeneration;
-import ru.ryabtsev.antifraud.rules.condiitons.InstanceOfClass;
-import ru.ryabtsev.antifraud.rules.condiitons.PresenceInContainer;
+import ru.ryabtsev.antifraud.rules.conditions.InstanceOfClass;
+import ru.ryabtsev.antifraud.rules.conditions.PresenceInContainer;
 import ru.ryabtsev.antifraud.transactions.ProcessableTransaction;
 import ru.ryabtsev.antifraud.transactions.Transaction;
 import ru.ryabtsev.antifraud.transactions.traits.DestinationCardNumberContainer;
-import ru.ryabtsev.antifraud.transactions.traits.PayeeTinContainer;
 
 public class GrayBeneficiary implements GrayRule {
 
