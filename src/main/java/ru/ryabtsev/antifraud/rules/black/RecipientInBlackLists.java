@@ -50,7 +50,7 @@ public class RecipientInBlackLists implements BlackRule {
         );
         final var instanceOfClass = new InstanceOfClass(transaction, PayeeTinContainer.class);
         final var conditionalActions = new ConditionalActions<>(
-                List.of(new DefaultConditionalAction<>(instanceOfClass, conditionalIncidentGeneration)),
+                new DefaultConditionalAction<>(instanceOfClass, conditionalIncidentGeneration),
                 defaultAction
         );
         final var ruleExecutionResult = conditionalActions.execute();

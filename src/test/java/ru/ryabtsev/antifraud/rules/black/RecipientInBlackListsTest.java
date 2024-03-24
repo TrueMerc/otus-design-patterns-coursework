@@ -1,4 +1,4 @@
-package ru.ryabtsev.antifraud.rules;
+package ru.ryabtsev.antifraud.rules.black;
 
 import java.util.List;
 import org.instancio.Instancio;
@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import ru.ryabtsev.antifraud.caches.BlackTinMockCache;
 import ru.ryabtsev.antifraud.caches.BlackTinCache;
+import ru.ryabtsev.antifraud.rules.Rule;
 import ru.ryabtsev.antifraud.rules.black.RecipientInBlackLists;
 import ru.ryabtsev.antifraud.rules.results.RuleExecutionResult;
 import ru.ryabtsev.antifraud.rules.results.incidents.Incident;

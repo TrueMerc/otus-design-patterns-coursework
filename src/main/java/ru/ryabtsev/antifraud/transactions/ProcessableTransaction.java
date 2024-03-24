@@ -30,8 +30,8 @@ public abstract class ProcessableTransaction implements Transaction, Processable
     }
 
     ProcessableTransaction(final ProcessableTransaction processableTransaction) {
-        this.transaction = processableTransaction.getTransaction();
-        this.ruleExecutionResults = processableTransaction.getRuleExecutionResults();
+        transaction = processableTransaction.getTransaction();
+        ruleExecutionResults = processableTransaction.ruleExecutionResults;
     }
 
     public static ProcessableTransaction ofFinal(final Transaction transaction, final RuleExecutionResult result) {
@@ -48,7 +48,7 @@ public abstract class ProcessableTransaction implements Transaction, Processable
             } else {
                 final ProcessableTransaction result = processableTransaction.getClass().equals(implementationClass)
                         ? processableTransaction
-                        : createCopyOfAnotherType(processableTransaction, ruleExecutionResult, implementationClass);
+                        : createCopyOfAnotherType(processableTransaction, implementationClass);
                 if (ruleExecutionResult != null) {
                     processableTransaction.addResult(ruleExecutionResult);
                 }
@@ -80,15 +80,12 @@ public abstract class ProcessableTransaction implements Transaction, Processable
 
     private static ProcessableTransaction createCopyOfAnotherType(
             final ProcessableTransaction processableTransaction,
-            final RuleExecutionResult ruleExecutionResult,
+//            final RuleExecutionResult ruleExecutionResult,
             final Class<? extends ProcessableTransaction> implementationClass) {
         try {
             final Constructor<? extends ProcessableTransaction> constructor =
                     implementationClass.getDeclaredConstructor(ProcessableTransaction.class);
             final ProcessableTransaction newTransaction = constructor.newInstance(processableTransaction);
-            if (ruleExecutionResult != null) {
-                newTransaction.addResult(ruleExecutionResult);
-            }
             return newTransaction;
         } catch (final NoSuchMethodException e) {
             throw new IllegalStateException("Can't find appropriate constructor in " + implementationClass, e);
